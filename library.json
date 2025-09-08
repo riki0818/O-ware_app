@@ -1,0 +1,21 @@
+{
+        "name": "O-Library",
+        "version": "0.4.0",
+        "repository": {
+                "type": "git",
+                "url": "https://github.com/aquonia-inc/O-Library"
+        },
+        "dependencies": {
+                "ESP Async WebServer": "^1.2.3",
+                "ArduinoJson": "^7.1.0",
+                "PubSubClient": "^2.8",
+                "Seeed_Arduino_LCD_RGB_Backlight": "https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight.git#1.0.2",
+                "DFRobot_ESP_PH_BY_GREENPONIK": "https://github.com/GreenPonik/DFRobot_ESP_PH_BY_GREENPONIK#1.1.2"
+        },
+        "frameworks": "arduino",
+        "platforms": "espressif32",
+        "build": {
+                "flags": "-std=gnu++2a",
+                "unflags": "-std=gnu++11"
+        }
+}

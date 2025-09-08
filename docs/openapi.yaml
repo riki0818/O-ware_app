@@ -1,0 +1,371 @@
+openapi: 3.0.0
+info:
+  title: O-Ware HTTP API
+  description: https://github.com/aquonia-inc/EauLibrary
+  version: 1.0.0
+servers:
+  - url: "http://{server_ip}:{port}"
+    variables:
+      server_ip:
+        default: "192.168.1.170"
+        description: "The IP address of the server"
+      port:
+        default: "80"
+        description: "The port number of the server"
+
+components:
+  schemas:
+    SingleValueSucceededResponse:
+      type: object
+      properties:
+        value:
+          oneOf:
+            - type: number
+            - type: string
+        unit:
+          type: string
+        time:
+          type: integer
+
+    OperationSucceededResponse:
+      type: object
+      properties:
+        result:
+          type: string
+        time:
+          type: integer
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        time:
+          type: integer
+
+paths:
+  /config/ip:
+    get:
+      summary: Returns the IP address.
+      description:
+      tags:
+        - Core Module
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleValueSucceededResponse"
+              example:
+                value: "192.168.1.1"
+                time: 0
+
+  /publish/start:
+    post:
+      summary: Start the publish. Parameters except `interval` and `client_id` are set as metadata.
+      description:
+      tags:
+        - Core Module
+      parameters:
+        - name: interval
+          in: query
+          required: true
+          description: The interval of the publish in milli seconds.
+          schema:
+            type: number
+        - name: client_id
+          in: query
+          required: true
+          description: The client id which MQTT broker requires.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationSucceededResponse"
+              example:
+                result: "success"
+                time: 0
+
+  /publish/end:
+    post:
+      summary: Finish the publish.
+      description:
+      tags:
+        - Core Module
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationSucceededResponse"
+              example:
+                result: "success"
+                time: 0
+
+  /tds:
+    get:
+      summary: Returns the TDS value.
+      description: The unit is in ppm.
+      tags:
+        - Core Module
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleValueSucceededResponse"
+              example:
+                value: 0
+                unit: "ppm"
+                time: 0
+
+  /flow:
+    get:
+      summary: Returns the flow value.
+      description: The unit is in L/min.
+      tags:
+        - Core Module
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleValueSucceededResponse"
+              example:
+                value: 0.0
+                unit: "L/min"
+                time: 0
+
+  /totalFlow:
+    get:
+      summary: Returns the total flow value.
+      description: The unit is in L.
+      tags:
+        - Core Module
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleValueSucceededResponse"
+              example:
+                value: 0.0
+                unit: "L"
+                time: 0
+
+  /totalFlow/reset:
+    post:
+      summary: Resets the total flow value.
+      description:
+      tags:
+        - Core Module
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationSucceededResponse"
+              example:
+                result: "success"
+                time: 0
+
+  /temperature:
+    get:
+      summary: Returns the tempeature value.
+      description: The unit is in Celsius.
+      tags:
+        - Core Module
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleValueSucceededResponse"
+              example:
+                value: 0.0
+                unit: "celcius"
+                time: 0
+
+  /{path}/pressure:
+    get:
+      summary: Returns the pressure value.
+      description: The unit is in psi.
+      tags:
+        - Pressure Sensor
+      parameters:
+        - name: path
+          in: path
+          required: true
+          description: The path of the sensor.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleValueSucceededResponse"
+              example:
+                value: 0.0
+                unit: "psi"
+                time: 0
+
+  /{path}/tds:
+    get:
+      summary: Returns the pressure value.
+      description: The unit is in ppm.
+      tags:
+        - TDS Sensor
+      parameters:
+        - name: path
+          in: path
+          required: true
+          description: The path of the sensor.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleValueSucceededResponse"
+              example:
+                value: 0.0
+                unit: "ppm"
+                time: 0
+
+  /{path}/on:
+    post:
+      summary: Turns on the light.
+      description:
+      tags:
+        - Light
+        - Pump
+      parameters:
+        - name: path
+          in: path
+          required: true
+          description: The path of the sensor.
+          schema:
+            type: string
+        - name: duration
+          in: query
+          required: false
+          description: The duration of the light on in milli seconds.
+          schema:
+            type: number
+
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationSucceededResponse"
+              example:
+                result: "success"
+                time: 0
+
+  /{path}/off:
+    post:
+      summary: Turns off the light.
+      description:
+      tags:
+        - Light
+        - Pump
+      parameters:
+        - name: path
+          in: path
+          required: true
+          description: The path of the sensor.
+          schema:
+            type: string
+        - name: duration
+          in: query
+          required: false
+          description: The duration of the light off in milli seconds.
+          schema:
+            type: number
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationSucceededResponse"
+              example:
+                result: "success"
+                time: 0
+
+  /{path}/open:
+    post:
+      summary: Opens the solenoid valve.
+      description:
+      tags:
+        - Solenoid Valve
+      parameters:
+        - name: path
+          in: path
+          required: true
+          description: The path of the sensor.
+          schema:
+            type: string
+        - name: duration
+          in: query
+          required: false
+          description: The duration of the solenoid valve open in milli seconds.
+          schema:
+            type: number
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationSucceededResponse"
+              example:
+                result: "success"
+                time: 0
+
+  /{path}/close:
+    post:
+      summary: Closes the solenoid valve.
+      description:
+      tags:
+        - Solenoid Valve
+      parameters:
+        - name: path
+          in: path
+          required: true
+          description: The path of the sensor.
+          schema:
+            type: string
+        - name: duration
+          in: query
+          required: false
+          description: The duration of the solenoid valve close in milli seconds.
+          schema:
+            type: number
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationSucceededResponse"
+              example:
+                result: "success"
+                time: 0
